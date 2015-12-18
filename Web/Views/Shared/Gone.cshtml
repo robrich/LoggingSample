@@ -1,0 +1,26 @@
+@{
+	ViewBag.Title = "410: Gone";
+	try {
+		Response.TrySkipIisCustomErrors = true;
+		Response.StatusCode = 410;
+//ReSharper disable once EmptyGeneralCatchClause
+	} catch {
+		// If response headers have already been sent, can't override them
+	}
+
+	bool returnJson = Html.RequestedJson();
+	if (returnJson) {
+		Response.ContentType = "application/json";
+		Layout = null;
+	} else {
+		Response.ContentType = "text/html";
+	}
+}
+@if (returnJson) {
+	@:{"success": false, "statusCode": @Response.StatusCode, "message": "@ViewBag.Title"}
+} else {
+	<text>
+		<h2>@ViewBag.Title</h2>
+		<p>The page you're looking for is not on this site.</p>
+	</text>
+}

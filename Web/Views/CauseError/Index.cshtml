@@ -1,0 +1,20 @@
+﻿@{
+	ViewBag.Title = "Cause Errors";
+}
+
+<article>
+	<h2>@ViewBag.Title</h2>
+	<a href="#" id="errorme">Cause JavaScript Error</a>
+	@Html.ActionLink("Cause Server-side Error", "ThrowUp","CauseError")
+</article>
+
+@section scripts {
+	<script>
+		$(document).ready(function () {
+			$("#errorme").click(function() {
+				var a;
+				a.b.c();
+			});
+		});
+	</script>
+}

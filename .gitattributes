@@ -1,0 +1,16 @@
+*.cs text=auto
+*.cshtml text=auto
+*.css text=auto
+*.js text=auto
+*.html text=auto
+*.config text=auto
+*.sql text=auto
+*.xml text=auto
+*.cs diff
+*.cshtml diff
+*.css diff
+*.js diff
+*.html diff
+*.config diff
+*.sql diff
+*.xml diff

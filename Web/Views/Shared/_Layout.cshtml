@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />@* because IE is evil *@
+	<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+	<title>@ViewBag.Title</title>
+	<link rel="stylesheet" href="/css/main.css" />
+	@RenderSection("styles", required: false)
+</head>
+
+<body>
+	@RenderBody()
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
+	<script src="/js/libs/jquery.validate-1.13.1/jquery.validate.unobtrusive.min.js"></script>
+	<script src="/js/libs/jquery.log.js"></script>
+	<script src="/js/init.js"></script>
+	@RenderSection("scripts", required: false)
+</body>
+</html>

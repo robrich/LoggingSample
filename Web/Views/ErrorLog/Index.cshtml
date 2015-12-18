@@ -1,0 +1,63 @@
+﻿@model PartialListPageInfo<ErrorLogViewModel>
+
+@{
+	ViewBag.Title = "Error List";
+	ViewBag.Wide = true;
+
+	// Paging parameters
+	int firstPage = Math.Max(0, (Model.PageNumber - 3));
+	int lastPage = Math.Min(Model.TotalPages - 1, (Model.PageNumber + 3));
+	bool first = firstPage != 0;
+	bool last = lastPage != Model.TotalPages - 1;
+}
+
+@if (Model.IsNullOrEmpty()) {
+	<div>No items found</div>
+} else {
+	<table class="table" cellpadding="0" cellspacing="0">
+		<thead>
+		<tr>
+			<th>Error</th>
+			<th>Date</th>
+			<th>User</th>
+			<th>Url</th>
+			<th>Message</th>
+		</tr>
+		</thead>
+		<tbody>
+		@foreach (ErrorLogViewModel err in Model) {
+			<tr>
+				<td>@Html.ActionLink(err.Id.ToString(), "Detail", new {id = err.Id})</td>
+				<td>@err.CreateDate.ToString("G")</td>
+				<td>@if (!string.IsNullOrEmpty(err.UserEmail)) {
+					    @: @err.UserFirstName<br/><small>@err.UserEmail</small>
+				    }</td>
+				<td>@err.Url.TrimToLength(50)</td>
+				<td>@((!string.IsNullOrEmpty(err.UserMessage) ? err.UserMessage : err.ExceptionDetails).TrimToLength(100))</td>
+			</tr>
+		}
+		</tbody>
+	</table>
+	<p>Page: </p>
+	<ul class="pager list-style-none">
+		@if (first) {
+			<li>@Html.ActionLink("0", "Index", new {id = 1})</li>
+			if (firstPage > 1) {
+				<li>...</li>
+			}
+		}
+		@for (int i = firstPage; i <= lastPage; i++) {
+			if (i != Model.PageNumber) {
+				<li>@Html.ActionLink(i.ToString(), "Index", new {id = i})</li>
+			} else {
+				<li>@Model.PageNumber</li>
+			}
+		}
+		@if (last) {
+			if (lastPage < (Model.TotalPages - 1)) {
+				<li>...</li>
+			}
+			<li>@Html.ActionLink(Model.TotalPages.ToString(), "Index", new {id = Model.TotalPages})</li>
+		}
+	</ul>
+}

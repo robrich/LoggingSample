@@ -1,0 +1,100 @@
+﻿@using LoggingSample.Entity.Helpers
+@model ErrorLogViewModel
+
+@{
+	ViewBag.Title = "ErrorLog.Id: "+Model.Id;
+}
+
+@section Head {
+<style>
+.view-label {
+	font-weight: bold;
+}
+</style>
+}
+
+@Html.ActionLink("<< Back to List", "Index")
+
+<span class="view-label">Date:</span>
+<span class="view-data">@Model.CreateDate.ToString("G")</span><br />
+
+<span class="view-label">User:</span>
+<span class="view-data">@Model.UserId: @Model.UserFirstName, @Model.UserEmail</span><br />
+
+<span class="view-label">Url:</span>
+<span class="view-data">@Model.HttpMethod @if (!string.IsNullOrEmpty(Model.Url)) {
+	<a href="@Model.Url" target="_blank">@Model.Url</a>
+}</span><br />
+
+<span class="view-label">Referrer:</span>
+<span class="view-data">@Model.ReferrerUrl</span><br />
+
+<span class="view-label">UserAgent:</span>
+<span class="view-data">@Model.UserAgent</span><br />
+
+<span class="view-label">Client IP:</span>
+<span class="view-data">@Model.ClientAddress</span><br />
+
+<br />
+<span class="view-label">Headers:</span><br />
+<span class="view-data">
+	@if (!Model.HeaderInfo.IsNullOrEmpty()) {
+		<small>
+			@foreach (HeaderInfo header in Model.HeaderInfo) {
+				@: <b>@header.Name:</b> @header.Value <br />
+			}
+		</small>
+	} else {
+		@: @Model.Headers
+	}
+</span><br />
+
+<br />
+<span class="view-label">Body:</span><br />
+<span class="view-data">@Model.Body</span><br />
+
+<br />
+<div class="view-label">Message:</div>
+<div class="view-data view-data-pre">@Model.UserMessage</div>
+<br />
+<div class="view-label">Exception Details:</div>
+<div class="view-data view-data-pre">
+	@if (Model.ExceptionInfo != null) {
+		@: @RenderException(Model.ExceptionInfo)
+	} else {
+		@: @Html.CRLF(Model.ExceptionDetails)
+	}
+</div>
+
+@helper RenderException(ExceptionInfo ei) {
+	if (ei == null) {
+		return;
+	}
+	<ul>
+		@if (!string.IsNullOrEmpty(ei.Message)) {
+			<li><span class="view-label">Message:</span> <span class="view-data">@Html.CRLF(ei.Message)</span></li>
+		}
+		@if (!string.IsNullOrEmpty(ei.ExceptionType)) {
+			<li><span class="view-label">ExceptionType:</span> <span class="view-data">@ei.ExceptionType</span></li>
+		}
+		@if (!string.IsNullOrEmpty(ei.StackTrace)) {
+			<li>
+				<div class="view-label">StackTrace:</div>
+				<div class="view-data stack-trace">@Html.CRLF(ei.StackTrace)</div>
+			</li>
+		}
+		@if (!ei.Data.IsNullOrEmpty()) {
+			foreach (string d in ei.Data) {
+				<li>@Html.CRLF(d)</li>
+			}
+		}
+		@if (ei.InnerException != null) {
+			<li>@RenderException(ei.InnerException)</li> @* recurse *@
+		}
+		@if (!ei.InnerExceptions.IsNullOrEmpty()) {
+			foreach (ExceptionInfo innerEi in ei.InnerExceptions) {
+				<li>@RenderException(innerEi)</li> @* recurse *@
+			}
+		}
+	</ul>
+}

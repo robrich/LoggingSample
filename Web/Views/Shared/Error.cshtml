@@ -1,0 +1,38 @@
+@model ErrorModel
+
+@{
+	ViewBag.Title = "503: Error";
+	try {
+		Response.TrySkipIisCustomErrors = true;
+		Response.StatusCode = 503;
+//ReSharper disable once EmptyGeneralCatchClause
+	} catch {
+		// If response headers have already been sent, can't override them
+	}
+	string errorid = "";
+	if (Model.ErrorId != null) {
+		errorid = Model.ErrorId.ToString();
+	}
+
+	bool returnJson = Html.RequestedJson();
+	if (returnJson) {
+		Response.ContentType = "application/json";
+		Layout = null;
+	} else {
+		Response.ContentType = "text/html";
+	}
+}
+@if (returnJson) {
+	@:{"success": false, "statusCode": @Response.StatusCode, "message": "@ViewBag.Title"@if (!string.IsNullOrEmpty(errorid)) {<text>, "errorId": @errorid</text>}}
+} else {
+	<text>
+		<h2>@ViewBag.Title</h2>
+
+		<p>
+			Sorry, an error happened.  Please try your request again or contact support.
+			@if (Model != null && Model.ErrorId > 0) {
+				@: Reference problem id @Model.ErrorId
+			}
+		</p>
+	</text>
+}
